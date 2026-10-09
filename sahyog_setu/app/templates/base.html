@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sahyog Setu</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head><body>
+<nav><b>Sahyog Setu</b>{% if me %}<a href="/">Home</a><a href="/sessions">Sessions</a><a href="/feed">Feed</a>
+{% if me.role=='supervisor' %}<a href="/admin">Admin</a><a href="/analytics">Analytics</a>{% endif %}<a href="/logout">Log out ({{me.name}})</a>{% endif %}</nav>
+<main>{% for m in get_flashed_messages() %}<div class="flash">{{m}}</div>{% endfor %}{% block c %}{% endblock %}</main></body></html>

@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block c %}
+<div class="card" style="max-width:440px;margin:auto"><h2>{{ 'Join your colony' if mode=='register' else 'Sign in' }}</h2>
+<form method="post">
+{% if mode=='register' %}
+<select name="role"><option value="parent">I am a parent</option><option value="senior">I am a senior citizen</option></select>
+<input name="name" placeholder="Full name" required><input name="phone" placeholder="Phone" required>
+<input name="emergency_name" placeholder="Emergency contact (seniors: adult child)" required>
+<input name="emergency_phone" placeholder="Emergency contact phone" required>
+{% endif %}
+<input name="email" type="email" placeholder="Email" required><input name="password" type="password" placeholder="Password" required>
+<button>{{ 'Register' if mode=='register' else 'Sign in' }}</button></form>
+<p><a href="{{ '/login' if mode=='register' else '/register' }}">{{ 'Already registered? Sign in' if mode=='register' else 'New here? Register' }}</a></p>
+{% if mode=='login' %}<small>Demo logins (password demo123): supervisor@demo.in, parent@demo.in, senior@demo.in</small>{% endif %}</div>{% endblock %}

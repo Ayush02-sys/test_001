@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block c %}
+<h1>Namaste, {{me.name}}</h1>
+{% if me.role!='supervisor' %}
+<p>Status: <span class="tag {{'' if me.verified else 'n'}}">{{ 'Verified' if me.verified else 'Awaiting verification' }}</span></p>
+<div class="grid"><div class="card"><h3>Document vault</h3>
+<form method="post" action="/docs" enctype="multipart/form-data">
+<select name="kind">{% for k in ['ID proof','Background verification','Medical clearance','Other'] %}<option>{{k}}</option>{% endfor %}</select>
+<input type="file" name="file" required><button>Encrypt and upload</button></form>
+<table>{% for d in docs %}<tr><td>{{d.kind}}</td><td><span class="tag {{'' if d.status=='approved' else 'n'}}">{{d.status}}</span></td></tr>{% endfor %}</table></div>
+{% if me.role=='senior' %}<div class="card"><h3>Emergency</h3><form method="post" action="/sos" onsubmit="return confirm('Alert your family and the supervisor?')"><input type="hidden" name="who" value="senior:{{me.id}}"><input name="note" placeholder="What happened? (optional)"><button class="sos">Send SOS</button></form></div>{% endif %}
+</div>
+{% if me.role=='parent' %}
+<div class="card"><h3>My children</h3>
+{% for c in kids %}<form method="post" action="/sos" style="display:flex;gap:8px;align-items:center" onsubmit="return confirm('Send an emergency alert for {{c.name}}?')"><span style="flex:1"><b>{{c.name}}</b>, {{c.age}} yrs. {{c.medical or 'No medical notes'}}</span><input type="hidden" name="who" value="child:{{c.id}}"><button class="sos">SOS</button></form>{% else %}<p>Add your child to join sessions.</p>{% endfor %}
+<h3>Add a child</h3><form method="post" action="/children" class="grid"><input name="name" placeholder="Child's name" required><input name="age" type="number" placeholder="Age" required><input name="medical" placeholder="Medical notes, allergies"><input name="pref_name" placeholder="Preferred family contact" required><input name="pref_phone" placeholder="Their phone" required><button>Add child</button></form></div>
+{% endif %}
+{% else %}
+<div class="grid"><div class="card"><div class="kpi">{{pending}}</div>accounts awaiting verification. <a href="/admin">Open admin</a></div><div class="card"><div class="kpi" style="color:var(--r)">{{open_em}}</div>open emergencies</div></div>
+{% endif %}
+<div class="card"><h3>Upcoming sessions</h3><table>{% for s in upcoming %}<tr><td>{{s.start|dt}}</td><td><a href="/sessions/{{s.id}}">{{s.title}}</a></td><td>{{s.venue}}</td><td>{{s.senior or '-'}}</td></tr>{% else %}<tr><td>No sessions scheduled yet.</td></tr>{% endfor %}</table></div>
+{% endblock %}

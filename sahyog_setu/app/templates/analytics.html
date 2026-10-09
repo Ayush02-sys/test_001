@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block c %}<h1>Community analytics</h1>
+<div class="grid">{% for l,k in [('Screen-free child hours','child_hours'),('Senior volunteer hours','senior_hours'),('Active children','kids'),('Active seniors','seniors'),('Sessions held','sessions'),('Emergencies','emergencies'),('Avg response (min)','response')] %}<div class="card"><div class="kpi">{{d.kpi[k]}}</div>{{l}}</div>{% endfor %}</div>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(380px,1fr))"><div class="card"><canvas id="w"></canvas></div><div class="card"><canvas id="a"></canvas></div><div class="card"><canvas id="o"></canvas></div><div class="card"><canvas id="v"></canvas></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const d={{d|tojson}},C=['#0b5d5b','#e8a317','#b42318','#5b6ee1','#7aa33b'];
+const mk=(id,t,type,labels,sets,legend=true)=>new Chart(document.getElementById(id),{type,data:{labels,datasets:sets},options:{plugins:{title:{display:true,text:t},legend:{display:legend}}}});
+mk('w','Weekly engagement hours','line',d.weekly.labels,[{label:'Children',data:d.weekly.child,borderColor:C[0]},{label:'Seniors',data:d.weekly.senior,borderColor:C[1]}]);
+mk('a','Activity popularity (child check-ins)','doughnut',Object.keys(d.activity),[{data:Object.values(d.activity),backgroundColor:C}]);
+mk('o','Average venue occupancy (%)','bar',Object.keys(d.occupancy),[{data:Object.values(d.occupancy),backgroundColor:C[0]}],false);
+mk('v','Booked hours by venue','bar',Object.keys(d.venue),[{data:Object.values(d.venue),backgroundColor:C[1]}],false);
+</script>{% endblock %}

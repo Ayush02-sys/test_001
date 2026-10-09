@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block c %}
+<h1>{{s.title}}</h1><p>{{s.activity}}, {{s.venue}}, {{s.start|dt}} to {{s.end|tm}}. Host: {{s.senior or '-'}}</p>
+{% if me.role=='supervisor' %}
+<div class="card"><h3>Attendance</h3>
+<form method="post" action="/attend" style="display:flex;gap:8px"><input type="hidden" name="session_id" value="{{s.id}}">
+<select name="who">{% for c in kids %}<option value="child:{{c.id}}">Child: {{c.name}}</option>{% endfor %}{% for u in seniors %}<option value="senior:{{u.id}}">Senior: {{u.name}}</option>{% endfor %}</select>
+<button name="act" value="in">Check in</button><button class="g" name="act" value="out">Check out</button></form>
+<table>{% for a in att %}<tr><td>{{a.kind}}</td><td>{{a.name}}</td><td>{{a.check_in|tm}}</td><td>{{a.check_out|tm or 'on site'}}</td></tr>{% endfor %}</table></div>
+<div class="card"><h3>Post an update</h3><form method="post" action="/post" enctype="multipart/form-data"><input type="hidden" name="session_id" value="{{s.id}}"><input name="caption" placeholder="Caption" required><input type="file" name="media" accept="image/*,video/*"><button>Share with parents and seniors</button></form></div>
+{% endif %}
+{% include "_posts.html" %}{% endblock %}

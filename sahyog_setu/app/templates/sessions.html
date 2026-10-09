@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block c %}<h1>Sessions</h1>
+{% if me.role=='supervisor' %}<div class="card"><h3>Book a session</h3><form method="post" class="grid">
+<input name="title" placeholder="Title" required>
+<select name="activity">{% for a in ['Storytelling','Gardening','Arts & crafts','Traditional games','Mentoring'] %}<option>{{a}}</option>{% endfor %}</select>
+<select name="venue_id">{% for v in venues %}<option value="{{v.id}}">{{v.name}} (capacity {{v.capacity}})</option>{% endfor %}</select>
+<select name="senior_id"><option value="">Senior host</option>{% for s in seniors %}<option value="{{s.id}}">{{s.name}}</option>{% endfor %}</select>
+<input type="datetime-local" name="start" required><input type="datetime-local" name="end" required><button>Book session</button></form></div>{% endif %}
+<div class="card"><table><tr><th>When</th><th>Session</th><th>Activity</th><th>Venue</th><th>Senior</th></tr>
+{% for s in rows %}<tr><td>{{s.start|dt}}</td><td><a href="/sessions/{{s.id}}">{{s.title}}</a></td><td>{{s.activity}}</td><td>{{s.venue}}</td><td>{{s.senior or '-'}}</td></tr>{% endfor %}</table></div>{% endblock %}
